@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="provider2.mapper.DeptMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="model.DeptEntity" id="deptMap">
+        <result property="deptno" column="deptno"/>
+        <result property="dname" column="dname"/>
+        <result property="loc" column="loc"/>
+    </resultMap>
+  
+  <!--要查询的字段-->  
+  <sql id="sel_DeptColumns_List" > 
+  	  deptno ,        
+  dname ,        
+  loc         
+  
+  </sql>
+  
+  <!--要添加的字段-->
+  <sql id="ins_DeptColumns_List" >
+       #{deptno},   #{dname},   #{loc}   </sql> 
+  
+  <!--要修改的字段-->
+  <sql id="upd_DeptColumns_List" >
+    <set>
+    <if test="t.dname != null">dname = #{t.dname}, </if>
+    <if test="t.loc != null">loc = #{t.loc}</if>
+	</set>
+	where deptno = #{t.deptno}
+  </sql> 
+  
+  <!--定义删除的条件-->
+  <sql id="del_DeptPramas_List">
+    <where>
+    <if test="t.deptno != null">and deptno = #{t.deptno}</if>
+    <if test="t.dname != null">and dname = #{t.dname}</if>
+    <if test="t.loc != null">and loc = #{t.loc}</if>
+	</where>
+  </sql> 
+  
+  <!--定义查询的条件-->
+  <sql id="sel_DeptPramas_List">
+    <where>
+    <if test="t.deptno != null">and deptno = #{t.deptno}</if>
+    <if test="t.dname != null">and dname = #{t.dname}</if>
+    <if test="t.loc != null">and loc = #{t.loc}</if>
+	</where>
+  </sql>
+
+    <!--添加-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="deptno">
+        insert into dept values (<include refid="ins_DeptColumns_List" />)
+    </insert>
+
+    <!--修改-->
+    <update id="update">
+        update dept <include refid="upd_DeptColumns_List" />
+    </update>
+
+    <!--根据条件删除-->
+    <delete id="delete">
+        delete from dept <include refid="del_DeptPramas_List" />
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteBatch">
+        delete from dept where deptno in
+        <foreach item="deptno" collection="array" open="(" separator="," close=")">
+            #{deptno}
+        </foreach>
+    </delete>
+
+    <!--根据主键id查询单个对象-->
+	<select id="queryObjectById" resultMap="deptMap">
+		select  <include refid="sel_DeptColumns_List" />  from dept where deptno = #{id}
+	</select>
+	
+	<!--查询所有对象-->
+	<select id="queryAll" resultMap="deptMap">
+		select  <include refid="sel_DeptColumns_List" />  from dept
+    </select>
+
+    <!--根据条件（无条件）查询多个对象-->
+	<select id="queryManyByPramas" resultMap="deptMap">
+		select  <include refid="sel_DeptColumns_List" />  from dept <include refid="sel_DeptPramas_List" />
+	</select>
+	
+	<!--根据条件（无条件）分页查询-->
+	<select id="queryListByPramas" resultMap="deptMap">
+		select  <include refid="sel_DeptColumns_List" />  from dept <include refid="sel_DeptPramas_List" /> order by deptno desc
+	</select>
+
+    <!--根据条件查询单条数据-->
+    <select id="queryObjectByPramas" resultMap="deptMap">
+        select  <include refid="sel_DeptColumns_List" />  from dept <include refid="sel_DeptPramas_List" />
+    </select>
+	
+	<!--根据条件（无条件）查询数据条数-->
+ 	<select id="queryTotalByPramas" resultType="java.lang.Long">
+		select count(*) from dept <include refid="sel_DeptPramas_List" />
+	</select>
+	
+
+
+</mapper>

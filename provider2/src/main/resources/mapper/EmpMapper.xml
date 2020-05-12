@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="provider2.mapper.EmpMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="model.EmpEntity" id="empMap">
+        <result property="empno" column="empno"/>
+        <result property="ename" column="ename"/>
+        <result property="job" column="job"/>
+        <result property="mgr" column="mgr"/>
+        <result property="hiredate" column="hiredate"/>
+        <result property="sal" column="sal"/>
+        <result property="comm" column="comm"/>
+        <result property="deptno" column="deptno"/>
+    </resultMap>
+  
+  <!--要查询的字段-->  
+  <sql id="sel_EmpColumns_List" > 
+  	  empno ,        
+  ename ,        
+  job ,        
+  mgr ,        
+  hiredate ,        
+  sal ,        
+  comm ,        
+  deptno         
+  
+  </sql>
+  
+  <!--要添加的字段-->
+  <sql id="ins_EmpColumns_List" >
+       #{empno},   #{ename},   #{job},   #{mgr},   #{hiredate},   #{sal},   #{comm},   #{deptno}   </sql> 
+  
+  <!--要修改的字段-->
+  <sql id="upd_EmpColumns_List" >
+    <set>
+    <if test="t.ename != null">ename = #{t.ename}, </if>
+    <if test="t.job != null">job = #{t.job}, </if>
+    <if test="t.mgr != null">mgr = #{t.mgr}, </if>
+    <if test="t.hiredate != null">hiredate = #{t.hiredate}, </if>
+    <if test="t.sal != null">sal = #{t.sal}, </if>
+    <if test="t.comm != null">comm = #{t.comm}, </if>
+    <if test="t.deptno != null">deptno = #{t.deptno}</if>
+	</set>
+	where empno = #{t.empno}
+  </sql> 
+  
+  <!--定义删除的条件-->
+  <sql id="del_EmpPramas_List">
+    <where>
+    <if test="t.empno != null">and empno = #{t.empno}</if>
+    <if test="t.ename != null">and ename = #{t.ename}</if>
+    <if test="t.job != null">and job = #{t.job}</if>
+    <if test="t.mgr != null">and mgr = #{t.mgr}</if>
+    <if test="t.hiredate != null">and hiredate = #{t.hiredate}</if>
+    <if test="t.sal != null">and sal = #{t.sal}</if>
+    <if test="t.comm != null">and comm = #{t.comm}</if>
+    <if test="t.deptno != null">and deptno = #{t.deptno}</if>
+	</where>
+  </sql> 
+  
+  <!--定义查询的条件-->
+  <sql id="sel_EmpPramas_List">
+    <where>
+    <if test="t.empno != null">and empno = #{t.empno}</if>
+    <if test="t.ename != null">and ename = #{t.ename}</if>
+    <if test="t.job != null">and job = #{t.job}</if>
+    <if test="t.mgr != null">and mgr = #{t.mgr}</if>
+    <if test="t.hiredate != null">and hiredate = #{t.hiredate}</if>
+    <if test="t.sal != null">and sal = #{t.sal}</if>
+    <if test="t.comm != null">and comm = #{t.comm}</if>
+    <if test="t.deptno != null">and deptno = #{t.deptno}</if>
+	</where>
+  </sql>
+
+    <!--添加-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="empno">
+        insert into emp values (<include refid="ins_EmpColumns_List" />)
+    </insert>
+
+    <!--修改-->
+    <update id="update">
+        update emp <include refid="upd_EmpColumns_List" />
+    </update>
+
+    <!--根据条件删除-->
+    <delete id="delete">
+        delete from emp <include refid="del_EmpPramas_List" />
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteBatch">
+        delete from emp where empno in
+        <foreach item="empno" collection="array" open="(" separator="," close=")">
+            #{empno}
+        </foreach>
+    </delete>
+
+    <!--根据主键id查询单个对象-->
+	<select id="queryObjectById" resultMap="empMap">
+		select  <include refid="sel_EmpColumns_List" />  from emp where empno = #{id}
+	</select>
+	
+	<!--查询所有对象-->
+	<select id="queryAll" resultMap="empMap">
+		select  <include refid="sel_EmpColumns_List" />  from emp
+    </select>
+
+    <!--根据条件（无条件）查询多个对象-->
+	<select id="queryManyByPramas" resultMap="empMap">
+		select  <include refid="sel_EmpColumns_List" />  from emp <include refid="sel_EmpPramas_List" />
+	</select>
+	
+	<!--根据条件（无条件）分页查询-->
+	<select id="queryListByPramas" resultMap="empMap">
+		select  <include refid="sel_EmpColumns_List" />  from emp <include refid="sel_EmpPramas_List" /> order by empno desc
+	</select>
+
+    <!--根据条件查询单条数据-->
+    <select id="queryObjectByPramas" resultMap="empMap">
+        select  <include refid="sel_EmpColumns_List" />  from emp <include refid="sel_EmpPramas_List" />
+    </select>
+	
+	<!--根据条件（无条件）查询数据条数-->
+ 	<select id="queryTotalByPramas" resultType="java.lang.Long">
+		select count(*) from emp <include refid="sel_EmpPramas_List" />
+	</select>
+	
+
+
+</mapper>
